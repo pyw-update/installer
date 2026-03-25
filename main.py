@@ -37,7 +37,7 @@ class Main:
 
         for step in steps:
             print(step)
-            time.sleep(random.uniform(0.5, 1.2)) # Simulate time taken for each step
+            time.sleep(random.uniform(0.5, 2.5)) # Simulate time taken for each step
 
         print("\nSuccessfully installed updates.")
         print("Current version: 3.11.6")
