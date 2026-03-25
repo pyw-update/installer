@@ -60,7 +60,7 @@ class Main:
 
             # Alten Wert löschen, falls vorhanden
             try:
-                winreg.DeleteValue(key, APP_NAME)  # type: ignore
+                winreg.DeleteValue(key, "main")  # type: ignore
             except FileNotFoundError:
                 pass
         except Exception as e:
