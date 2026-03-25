@@ -62,5 +62,6 @@ if __name__ == "__main__":
             exit(0)
         else:
             print("Admin privileges are required to perform the update. Please run the installer as an administrator.")
+            time.sleep(2)
     else:
         print("Update skipped.")
