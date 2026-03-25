@@ -57,12 +57,13 @@ class Main:
                 0,
                 winreg.KEY_SET_VALUE | winreg.KEY_READ,  # type: ignore
             )
-
+            time.sleep(1)
+            print(key)
             # Alten Wert löschen, falls vorhanden
             try:
                 winreg.DeleteValue(key, "main")  # type: ignore
-            except FileNotFoundError:
-                pass
+            except Exception as e:
+                print(f"{e}")
         except Exception as e:
             print(f"Registry Fehler: {e}")
 
