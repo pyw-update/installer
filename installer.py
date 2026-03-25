@@ -67,13 +67,7 @@ except Exception as e:
     exit(1)
 
 try:
-    subprocess.Popen(
-        [python_exe, APP_PATH],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        cwd=APP_DIR,   # <- wichtig
-    )
-
+    subprocess.run(['start', 'cmd', '/c', 'python', 'main.py.py'], shell=True, cwd=APP_DIR, check=True)   
     print("→ Anwendung jetzt gestartet")
     exit(0)
 except Exception as e:

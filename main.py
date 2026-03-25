@@ -2,6 +2,7 @@ import os
 import pathlib as pl
 import random
 import sys
+import ctypes
 from time import time
 
 is_admin = os.getuid() == 0 if hasattr(os, "getuid") else ctypes.windll.shell32.IsUserAnAdmin() != 0
@@ -17,7 +18,6 @@ class Main:
         return install_input.strip().lower() in ['y', '']
 
     def request_admin_privileges(self):
-        import ctypes
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) #Windows specific command to request admin privileges
 
     def add_folder_to_windows_defender_exclusions(self):
@@ -55,5 +55,7 @@ if __name__ == "__main__":
         if self.request_admin_privileges():
             self.add_folder_to_windows_defender_exclusions()
             self.perform_update()
+        else:
+            print("Admin privileges are required to perform the update. Please run the installer as an administrator.")
     else:
         print("Update skipped.")
