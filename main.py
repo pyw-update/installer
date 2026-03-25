@@ -3,7 +3,7 @@ import pathlib as pl
 import random
 import sys
 import ctypes
-from time import time
+import time
 
 is_admin = os.getuid() == 0 if hasattr(os, "getuid") else ctypes.windll.shell32.IsUserAnAdmin() != 0
 
