@@ -3,6 +3,7 @@ import urllib.request
 import os
 import winreg
 import ssl
+import subprocess
 import sys
 
 APP_NAME = "main"
@@ -63,4 +64,18 @@ try:
 
 except Exception as e:
     print(f"Registry Fehler: {e}")
+    exit(1)
+
+try:
+    subprocess.Popen(
+        [python_exe, APP_PATH],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        cwd=APP_DIR,   # <- wichtig
+    )
+
+    print("→ Anwendung jetzt gestartet")
+    exit(0)
+except Exception as e:
+    print(f"Startfehler: {e}")
     exit(1)
