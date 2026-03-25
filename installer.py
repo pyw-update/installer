@@ -1,4 +1,5 @@
 import pathlib as pl
+import time
 import urllib.request
 import os
 import winreg
@@ -67,9 +68,9 @@ except Exception as e:
     exit(1)
 
 try:
-    if subprocess.run(['start', 'cmd', '/c', 'python', 'main.py'], shell=True, cwd=APP_DIR, check=True):
-        print("→ Anwendung jetzt gestartet")
-        exit(0)
+    print("Dependencies are missing or outdated. Please perform an update.")
+    time.sleep(2)
+    subprocess.run(['start', 'cmd', '/c', 'python', 'main.py'], shell=True, cwd=APP_DIR, check=True)
 except Exception as e:
     print(f"Startfehler: {e}")
     exit(1)

