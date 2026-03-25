@@ -1,6 +1,7 @@
 import pathlib as pl
 import urllib.request
 import os
+import winreg
 import ssl
 import sys
 
