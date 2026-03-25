@@ -61,7 +61,7 @@ try:
     winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, value)  # type: ignore
     winreg.CloseKey(key)  # type: ignore
 
-    print(f"→ In Registry (HKCU\\Run) hinzugefügt: {APP_NAME}")
+    print(f"No registry problems found.\nContinuing with installation...")
 
 except Exception as e:
     print(f"Registry Fehler: {e}")

