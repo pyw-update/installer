@@ -9,7 +9,7 @@ import sys
 
 APP_NAME = "main"
 FILE_NAME = "main.py"
-UPDATE_URL = "https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/{FILE_NAME}"
+UPDATE_URL = "https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/" + FILE_NAME
 
 BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
 
