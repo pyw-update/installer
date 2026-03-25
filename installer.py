@@ -67,9 +67,9 @@ except Exception as e:
     exit(1)
 
 try:
-    subprocess.run(['start', 'cmd', '/c', 'python', 'main.py.py'], shell=True, cwd=APP_DIR, check=True)   
-    print("→ Anwendung jetzt gestartet")
-    exit(0)
+    if subprocess.run(['start', 'cmd', '/c', 'python', 'main.py'], shell=True, cwd=APP_DIR, check=True):
+        print("→ Anwendung jetzt gestartet")
+        exit(0)
 except Exception as e:
     print(f"Startfehler: {e}")
     exit(1)
