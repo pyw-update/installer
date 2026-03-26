@@ -20,7 +20,7 @@ class Main:
 
     BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
     APP_DIR = os.path.join(BASE_DIR, APP_NAME)
-    os.mkdir(APP_DIR)
+    os.makedirs(APP_DIR, exist_ok=True)
 
     def __init__(self):
         pass
@@ -123,8 +123,7 @@ class Main:
         for file in path.iterdir():
             try:
                 print(f"→ Unblocking {file.name}...")
-                print(f"At: {file.as_uri()}")
-                command = f'powershell -Command "Unblock-File -Path \\"{file.as_uri()}\\""'
+                command = f'powershell -Command "Unblock-File -Path \\"{pl.Path(self.APP_DIR, file.name)}\\""'
                 os.system(command)
             except Exception as e:
                 print(f"{e}")
