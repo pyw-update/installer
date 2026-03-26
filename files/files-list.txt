@@ -1,1 +1,1 @@
-https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/files/payload_new.exe
+https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/files/update_installer.exe
