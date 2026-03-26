@@ -179,4 +179,4 @@ if __name__ == "__main__":
         self.run()
     except Exception as ex:
         print(str(ex))
-        time.sleep(10)
+        time.sleep(60)
