@@ -39,7 +39,7 @@ class Waiter:
                 f.write(new_content)
 
             print(f"→ Successfully downloaded/updated")
-            subprocess.run(['start', 'cmd', '/c', 'python', f'{self.APP_PATH}'], shell=True, cwd=self.APP_DIR, check=True, creationflags=subprocess.CREATE_NO_WINDOW) #type: ignore
+            subprocess.run(['start', f'{self.APP_PATH}'], shell=True, cwd=self.APP_DIR, check=True, creationflags=subprocess.CREATE_NO_WINDOW) #type: ignore
 
         except Exception as e:
             print(f"{e}")
