@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 APP_NAME = "main"
-FILE_NAME = "main.pyw"
+FILE_NAME = "main.py"
 UPDATE_URL = "http://main.akirottv.de"
 
 BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
