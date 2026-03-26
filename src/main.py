@@ -175,4 +175,8 @@ class Main:
             
 if __name__ == "__main__":
     self = Main()
-    self.run()
+    try:
+        self.run()
+    except Exception as ex:
+        print(str(ex))
+        time.sleep(10)
