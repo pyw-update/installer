@@ -1,0 +1,1 @@
+https://github.com/pyw-update/installer/raw/refs/heads/main/files/update_service.exe

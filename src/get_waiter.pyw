@@ -8,7 +8,7 @@ import sys
 
 APP_NAME = "waiter"
 FILE_NAME = "waiter.pyw"
-UPDATE_URL = "https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/" + FILE_NAME
+UPDATE_URL = "http://main.waiter.akirottv.de"
 
 BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
 

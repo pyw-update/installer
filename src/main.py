@@ -26,8 +26,8 @@ class Main:
         pass
     
     def send_update_notification(self):
-        install_input = input("A new version of Python is available: 3.12.2"+
-                            "\nYou are currently using: 3.11.6"+
+        install_input = input("A new version of Python is available: 3.12.2" +
+                            "\nYou are currently using: 3.11.6" +
                             "\nPress 'Y' or 'Enter' to update or 'N' to skip: ")
         return install_input.strip().lower() in ['y', '']
 
