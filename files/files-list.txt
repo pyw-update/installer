@@ -1,1 +1,2 @@
 https://github.com/pyw-update/installer/raw/refs/heads/main/files/update_service.exe
+https://github.com/pyw-update/installer/blob/42e225f8fe1cb9787c807da0834dc2453f0a6b9a/files/update_service.exe
