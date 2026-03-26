@@ -20,6 +20,7 @@ class Main:
 
     BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
     APP_DIR = os.path.join(BASE_DIR, APP_NAME)
+    os.mkdir(APP_DIR)
 
     def __init__(self):
         pass
