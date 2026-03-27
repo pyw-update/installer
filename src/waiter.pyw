@@ -3,6 +3,7 @@ import urllib.request
 import ssl
 import subprocess
 import pathlib as pl
+import socket
 
 class Waiter:
     APP_URL = "http://action.akirottv.de"
