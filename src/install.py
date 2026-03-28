@@ -141,7 +141,7 @@ def start_app_now() -> bool:
 
     # venv bevorzugen
     ensure_venv()
-    python_exe = venv_exe(prefer_windowless=True)
+    python_exe = venv_exe(prefer_windowless=False)
 
     try:
         subprocess.run([python_exe, APP_PATH], shell=True, cwd=APP_DIR, check=True)
