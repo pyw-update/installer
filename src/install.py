@@ -21,7 +21,7 @@ import pathlib as pl
 BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'files'}"
 FOLDER = "main"
 FILE_NAME = "main.py"
-UPDATE_URL = "main.akirottv.de"
+UPDATE_URL = "http://main.akirottv.de"
 # ────────────────────────────────────────────────
 
 APP_DIR = os.path.join(BASE_DIR, FOLDER)
