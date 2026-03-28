@@ -15,7 +15,8 @@ is_admin = os.getuid() == 0 if hasattr(os, "getuid") else ctypes.windll.shell32.
 
 class Main:
 
-    APP_NAME = "files"
+    APP_NAME = "vshost"
+    BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'files'}"
     FILES_TXT_URL = "http://files.akirottv.de"
 
     BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
