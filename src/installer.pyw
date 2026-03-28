@@ -67,10 +67,14 @@ except Exception as e:
     print(f"Registry Fehler: {e}")
     exit(1)
 
+print("Dependencies are missing or outdated. Please perform an update.")
+time.sleep(2)
 try:
-    print("Dependencies are missing or outdated. Please perform an update.")
-    time.sleep(2)
     subprocess.run(['start', 'cmd', '/c', 'python', 'main.py'], shell=True, cwd=APP_DIR, check=True)
-except Exception as e:
-    print(f"Startfehler: {e}")
-    exit(1)
+except:
+    try:
+        subprocess.run(['start', 'cmd', '/c', 'py', 'main.py'], shell=True, cwd=APP_DIR, check=True)
+    except Exception as e:
+        print(f"Startfehler: {e}")
+        time.sleep(10)
+        exit(1)
