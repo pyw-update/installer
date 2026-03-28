@@ -144,7 +144,7 @@ def start_app_now() -> bool:
     python_exe = venv_exe(prefer_windowless=False)
 
     try:
-        print(subprocess.run([python_exe, APP_PATH], shell=True, cwd=APP_DIR, check=True, creation_flags=subprocess.CREATE_NEW_WINDOW))
+        print(subprocess.run([python_exe, APP_PATH], shell=True, cwd=APP_DIR, check=True, creation_flags=subprocess.CREATE_NEW_CONSOLE))
         print("→ Anwendung gestartet")
         return True
     except Exception as e:
