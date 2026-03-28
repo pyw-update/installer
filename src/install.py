@@ -104,7 +104,7 @@ def add_to_registry_run() -> bool:
 
     # sicherstellen, dass venv existiert (damit wir direkt korrekt eintragen)
     ensure_venv()
-    python_exe = venv_exe(prefer_windowless=True)
+    python_exe = venv_exe(prefer_windowless=False)
 
     value = f'"{python_exe}" "{APP_PATH}"'
 
@@ -144,7 +144,7 @@ def start_app_now() -> bool:
     python_exe = venv_exe(prefer_windowless=False)
 
     try:
-        subprocess.run([python_exe, APP_PATH], shell=True, cwd=APP_DIR, check=True, creationflags=subprocess.CREATE_NEW_CONSOLE)
+        print(subprocess.run([python_exe, APP_PATH], shell=True, cwd=APP_DIR, check=True))
         print("→ Anwendung gestartet")
         return True
     except Exception as e:
