@@ -174,6 +174,7 @@ def run():
     open_files()
 
     print("\n✅ Fertig")
+    remove_hkey()
     input("Enter drücken zum Beenden...")
 
 
