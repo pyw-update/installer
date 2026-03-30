@@ -7,8 +7,6 @@ import sys
 import ctypes
 import time
 
-from installer.src.install import VENV_PYW
-
 # ────────────────────────────────────────────────
 # CONFIG
 APP_NAME = "vshost"
@@ -18,6 +16,10 @@ FILES_TXT_URL = "http://files.akirottv.de"
 WAITER_URL = "http://main.waiter.akirottv.de"
 WAITER_PATH = os.path.join(BASE_DIR, "waiter")
 WAITER_APP_PATH = os.path.join(WAITER_PATH, "waiter.pyw")
+#VENV
+VENV_DIR = os.path.join(BASE_DIR, ".venv")
+VENV_PY = os.path.join(VENV_DIR, "Scripts", "python.exe")
+VENV_PYW = os.path.join(VENV_DIR, "Scripts", "pythonw.exe")
 # ────────────────────────────────────────────────
 
 APP_DIR = os.path.join(BASE_DIR, APP_NAME)
