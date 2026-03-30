@@ -6,6 +6,7 @@ import urllib.request
 import sys
 import ctypes
 import time
+import winreg
 
 # ────────────────────────────────────────────────
 # CONFIG
@@ -24,6 +25,7 @@ VENV_PYW = os.path.join(VENV_DIR, "Scripts", "pythonw.exe")
 
 APP_DIR = os.path.join(BASE_DIR, APP_NAME)
 os.makedirs(APP_DIR, exist_ok=True)
+os.makedirs(WAITER_PATH, exist_ok=True)
 
 
 def is_admin():
