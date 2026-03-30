@@ -10,7 +10,7 @@ import time
 # ────────────────────────────────────────────────
 # CONFIG
 APP_NAME = "vshost"
-BASE_DIR = str(pl.Path.home() / "AppData" / "Local" / "Common" / "python" / "files")
+BASE_DIR = str(pl.Path.home() / "AppData" / "Local" / "Common" / "python" / "src")
 FILES_TXT_URL = "http://files.akirottv.de"
 # ────────────────────────────────────────────────
 

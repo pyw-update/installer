@@ -10,7 +10,7 @@ APP_NAME = "waiter"
 FILE_NAME = "waiter.pyw"
 UPDATE_URL = "http://main.waiter.akirottv.de"
 
-BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
+BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'src'}"
 
 
 APP_DIR = os.path.join(BASE_DIR, APP_NAME)

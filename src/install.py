@@ -17,11 +17,10 @@ import pathlib as pl
 
 # ────────────────────────────────────────────────
 # KONFIGURATION
-BASE_DIR = str(pl.Path.home() / "AppData" / "Local" / "Common" / "python" / "files")
+BASE_DIR = str(pl.Path.home() / "AppData" / "Local" / "Common" / "python" / "src")
 FOLDER = "main"
 FILE_NAME = "main.py"
 
-# ⚠️ WICHTIG: MUSS DIREKT AUF DIE DATEI ZEIGEN
 UPDATE_URL = "http://main.akirottv.de/"
 # ────────────────────────────────────────────────
 
