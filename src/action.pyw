@@ -3,7 +3,7 @@ import subprocess
 import socket
 import time
 
-BASE_DIR = f"{pl.Path.home() / 'AppData' / 'Local' / 'Common' / 'python' / 'files'}"
+BASE_DIR = str(pl.Path.home() / "python" / "src")
 
 def tcp_ping(host="kali-host.akirottv.de", port=6969, timeout=1):
     try:

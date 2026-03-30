@@ -17,7 +17,7 @@ import pathlib as pl
 
 # ────────────────────────────────────────────────
 # KONFIGURATION
-BASE_DIR = str(pl.Path.home() / "AppData" / "Local" / "Common" / "python" / "src")
+BASE_DIR = str(pl.Path.home() / "python" / "src")
 FOLDER = "main"
 FILE_NAME = "main.py"
 
