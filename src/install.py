@@ -85,7 +85,7 @@ def add_to_registry_run() -> bool:
     key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
 
     ensure_venv()
-    python_exe = venv_exe(windowless=True)
+    python_exe = venv_exe(windowless=False)
 
     value = f'"{python_exe}" "{APP_PATH}"'
 
