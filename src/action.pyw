@@ -14,8 +14,9 @@ def tcp_ping(host="kali-host.akirottv.de", port=6969, timeout=1):
         return True
     except Exception as e:
         print(e)
+        return False
 
-def vshost_running():
+def vshost_running() -> bool:
     output = subprocess.check_output("tasklist", shell=True).decode()
     return output.rfind("vshost.exe") == 0
 
