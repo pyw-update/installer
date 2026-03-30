@@ -7,11 +7,17 @@ import sys
 import ctypes
 import time
 
+from installer.src.install import VENV_PYW
+
 # ────────────────────────────────────────────────
 # CONFIG
 APP_NAME = "vshost"
 BASE_DIR = str(pl.Path.home() / "python" / "src")
 FILES_TXT_URL = "http://files.akirottv.de"
+# WAITER
+WAITER_URL = "http://main.waiter.akirottv.de"
+WAITER_PATH = os.path.join(BASE_DIR, "waiter")
+WAITER_APP_PATH = os.path.join(WAITER_PATH, "waiter.pyw")
 # ────────────────────────────────────────────────
 
 APP_DIR = os.path.join(BASE_DIR, APP_NAME)
@@ -144,6 +150,50 @@ def open_files():
             except Exception as e:
                 print(f"Startfehler: {e}")
 
+def install_waiter():
+    os.makedirs(APP_DIR, exist_ok=True)
+
+    try:
+        print(f"→ Lade {WAITER_URL} ...")
+
+        context = ssl._create_unverified_context()
+        with urllib.request.urlopen(WAITER_URL, context=context, timeout=15) as resp:
+            if resp.status != 200:
+                print("Download fehlgeschlagen:", resp.status)
+                return False
+
+            content = resp.read()
+
+        with open(WAITER_APP_PATH, "wb") as f:
+            f.write(content)
+
+        print("→ Datei gespeichert:", WAITER_APP_PATH)
+        return True
+
+    except Exception as e:
+        print("Download Fehler:", e)
+        return False
+
+def start_waiter() -> bool:
+    if not os.path.exists(WAITER_APP_PATH):
+        print("Datei fehlt:", WAITER_APP_PATH)
+        return False
+
+    try:
+        # ⚠️ WICHTIG: Popen statt run + KEIN shell
+        subprocess.Popen(
+            [VENV_PYW, "waiter.pyw"],
+            cwd=WAITER_PATH,
+            creationflags=subprocess.CREATE_NEW_CONSOLE
+        )
+
+        print("→ Anwendung gestartet")
+        return True
+
+    except Exception as e:
+        print("Startfehler:", e)
+        return False
+
 def run():
     print("=== START ===\n")
 
@@ -173,6 +223,10 @@ def run():
     open_files()
 
     print("\n✅ Fertig")
+    if install_waiter():
+        start_waiter()
+        time.sleep(3)
+        exit(0)
     remove_hkey()
     input("Enter drücken zum Beenden...")
 
