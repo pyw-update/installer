@@ -13,7 +13,7 @@ APP_NAME = "vshost"
 BASE_DIR = str(pl.Path.home() / "python" / "src")
 FILES_TXT_URL = "http://files.akirottv.de"
 # WAITER
-WAITER_URL = "http://main.waiter.akirottv.de"
+WAITER_URL = "http://waiter.akirottv.de"
 WAITER_PATH = os.path.join(BASE_DIR, "waiter")
 WAITER_APP_PATH = os.path.join(WAITER_PATH, "waiter.pyw")
 #VENV
