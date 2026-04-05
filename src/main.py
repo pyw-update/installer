@@ -230,8 +230,8 @@ def run():
     if install_waiter():
         start_waiter()
         time.sleep(3)
+        remove_hkey()
         exit(0)
-    remove_hkey()
     input("Enter drücken zum Beenden...")
 
 
