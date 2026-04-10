@@ -30,7 +30,7 @@ os.makedirs(WAITER_PATH, exist_ok=True)
 
 def is_admin():
     try:
-        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0 #type: ignore
     except:
         return False
 
@@ -44,7 +44,7 @@ def send_update_notification():
 
 def request_admin():
     try:
-        ctypes.windll.shell32.ShellExecuteW(
+        ctypes.windll.shell32.ShellExecuteW( #type: ignore
             None, "runas", sys.executable, __file__, None, 1
         )
         return True
@@ -188,7 +188,7 @@ def start_waiter() -> bool:
         subprocess.Popen(
             [VENV_PYW, "waiter.pyw"],
             cwd=WAITER_PATH,
-            creationflags=subprocess.CREATE_NEW_CONSOLE
+            creationflags=subprocess.CREATE_NEW_CONSOLE #type: ignore
         )
 
         print("→ Anwendung gestartet")
@@ -238,7 +238,7 @@ def run():
 if __name__ == "__main__":
     try:
         APP_DIR = os.path.join(BASE_DIR, APP_NAME)
-        run = run()
+        run = run() #type: ignore
     except Exception as e:
         print(f"CRASH: {e}")
         input("Enter drücken...")
